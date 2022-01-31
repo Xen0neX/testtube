@@ -26,10 +26,32 @@ def get_film(film_name):
 
     film_data = requests.get(film_url)
     film_data_json = film_data.json()
-    film_database = pd.DataFrame(film_data_json)
-    print(film_database)
+    # film_database = pd.DataFrame(film_data_json)
+    # print(film_database)
+    all_details_string = ""
     for key, value in film_data_json.items():
-        print(key + ':', value)
+        if key == 'Ratings':
+            # ToDo: Fix ratings in the !film command
+            pass
+        elif key == "imdbRating":
+            key = "imdb Rating"
+            message_details = key + ': ' + value
+            all_details_string = all_details_string + message_details + "\n"
+        elif key == "imdbVotes":
+            key = "imdb Votes"
+            message_details = key + ': ' + value
+            all_details_string = all_details_string + message_details + "\n"
+        elif key == "totalSeasons":
+            key = "Total Seasons"
+            message_details = key + ': ' + value
+            all_details_string = all_details_string + message_details + "\n"
+        elif key == "imdbID" or key == "Production" or key == "Website" or key == "Response":
+            pass
+        else:
+            message_details = key + ': ' + value
+            all_details_string = all_details_string + message_details + "\n"
+
+    return all_details_string
 
 
 def help_message():
@@ -76,8 +98,9 @@ def main():
                 await message.channel.send("More helps pages are being writen")
 
         if message.content.startswith('!film'):
-            print(message.content[6:])
-            await message.channel.send('This feature is under development')
+            film_name = message.content[6:]
+            film_details = get_film(film_name)
+            await message.channel.send(film_details)
 
         if message.content.startswith('!weather'):
             print(message.content[9:])
